@@ -27,7 +27,7 @@ class ClientApp extends React.Component {
           <Text>header</Text>
         </View>
         <View style={styles.body}>
-          <Text>current process: {this.state.currentProcessLoaded ? this.state.currentProcess.stamps.length : 0}</Text>
+          {this.state.currentProcessLoaded && <Text>Current process: {this.currentAmmountOfStamps()} / {this.targetAmmountOfStamps()}</Text>}
           <QRCode
             value={JSON.stringify(qrCodeValue)}
             size={200} />
@@ -39,17 +39,37 @@ class ClientApp extends React.Component {
     );
   }
 
-  fetchCurrentProcess() {
-    fetch('http://192.168.43.92:8080/client/' + clientId + '/business/' + businessId + '/current-process', {
+  currentAmmountOfStamps() {
+    return this.state.currentProcessLoaded ? this.state.currentProcess.stamps.length : ''
+  }
+
+  targetAmmountOfStamps() {
+    return this.state.currentProcessLoaded ? this.state.currentProcess.processPolicy.targetAmount : ''
+  }
+
+  async fetchCurrentProcess() {
+    this.setState({
+      currentProcessLoaded: false
+    })
+
+    var response = await fetch('http://192.168.43.92:8080/client/' + clientId + '/business/' + businessId + '/current-process', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-    }).then((response) => response.json().then((currentProcess) => this.setState({
+    });
+
+    if (response.status !== 200) {
+      return;
+    }
+
+    var currentProcess = await response.json();
+
+    this.setState({
       currentProcessLoaded: true,
       currentProcess: currentProcess
-    })));
+    })
   };
 }
 
