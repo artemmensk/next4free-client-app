@@ -1,5 +1,6 @@
 {
   "expo": {
+    "entryPoint": "./ClientApp.js",
     "name": "client-app",
     "slug": "client-app",
     "privacy": "public",
