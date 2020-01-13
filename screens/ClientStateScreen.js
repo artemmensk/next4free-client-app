@@ -1,11 +1,20 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    SafeAreaView,
+    ScrollView,
+    RefreshControl,
+} from 'react-native';
 
 const clientId = 'hardcoded client id'
 const businessId = 'hardcoded business id'
 
 export class ClientStateScreen extends React.Component {
     state = {
+        refreshing: false,
         currentProcessLoaded: false
     }
 
@@ -13,18 +22,38 @@ export class ClientStateScreen extends React.Component {
         this.fetchCurrentProcess()
     }
 
+    onRefresh() {
+        this.setState({
+            refreshing: true
+        })
+
+        this.fetchCurrentProcess()
+
+        this.setState({
+            refreshing: false
+        })
+    }
+
     render() {
         return (
-            <View style={{ flex: 1 }}>
-                <View style={styles.body}>
-                    {this.state.currentProcessLoaded && <Text style={styles.text}>{this.currentAmmountOfStamps()} / {this.targetAmmountOfStamps()}</Text>}
-                </View>
-                <View style={styles.buttonsView}>
-                    <View style={styles.buttonView}>
-                        <Button title={'QR Code'} color='black' onPress={() => this.props.navigation.navigate('QRCodeScreen', { 'clientId': clientId })} />
+            <SafeAreaView style={{ flex: 1 }}>
+                <ScrollView
+                    contentContainerStyle={{ flex: 1 }}
+                    refreshControl={
+                        <RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.onRefresh()} />
+                    }
+                >
+                    <View style={styles.body}>
+                        {this.state.currentProcessLoaded && <Text style={styles.text}>{this.currentAmmountOfStamps()} / {this.targetAmmountOfStamps()}</Text>}
                     </View>
-                </View>
-            </View>
+                    <View style={styles.buttonsView}>
+                        <View style={styles.buttonView}>
+                            <Button title={'QR Code'} color='black' onPress={() => this.props.navigation.navigate('QRCodeScreen', { 'clientId': clientId })} />
+                        </View>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+
         );
     }
 
