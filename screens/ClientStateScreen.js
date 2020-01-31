@@ -9,8 +9,12 @@ import {
     RefreshControl,
 } from 'react-native';
 
+import * as SecureStore from 'expo-secure-store';
+
 const clientId = 'hardcoded client id'
 const businessId = 'hardcoded business id'
+
+const backendUrl = 'http://192.168.43.92:8080'
 
 export class ClientStateScreen extends React.Component {
     state = {
@@ -66,11 +70,15 @@ export class ClientStateScreen extends React.Component {
     }
 
     async fetchCurrentProcess() {
-        var response = await fetch('http://192.168.43.92:8080/client/' + clientId + '/business/' + businessId + '/current-process', {
+
+        var accessToken = await SecureStore.getItemAsync('accessToken');
+
+        var response = await fetch(backendUrl + '/client/' + clientId + '/business/' + businessId + '/current-process', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie': accessToken
             },
         });
 
