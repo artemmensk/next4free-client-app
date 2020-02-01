@@ -8,6 +8,8 @@ import {
 
 import * as SecureStore from 'expo-secure-store';
 
+import base64 from 'react-native-base64'
+
 const backendUrl = 'http://192.168.43.92:8080'
 
 export class LoginScreen extends React.Component {
@@ -41,11 +43,29 @@ export class LoginScreen extends React.Component {
             }
         });
 
-        var accessToken = response.headers.get('Set-Cookie'); // Set-Cookie: access_token=vovan; Secure; HttpOnly
+        var setCookieHeader = response.headers.get('Set-Cookie');
+        var accessToken = this.extractAccessToken(setCookieHeader);
+        var clientId = this.extractClientId(accessToken);
 
-        SecureStore.setItemAsync('accessToken', accessToken)
+        SecureStore.setItemAsync('accessToken', accessToken);
+        SecureStore.setItemAsync('clientId', clientId);
 
-        this.props.navigation.navigate('AppNavigator')
+        this.props.navigation.navigate('AppNavigator');
+    }
+
+    extractAccessToken(setCookieHeader) {
+        const accessTokenPart = setCookieHeader.split(' ')[0];
+        const accessToken = accessTokenPart.split('=')[1].replace(';','');
+        console.log(accessToken)
+        return accessToken;
+    }
+
+    extractClientId(accessToken) {
+        var payload = accessToken.split('.')[1];
+        var badDecoded = base64.decode(payload);
+        var decoded = badDecoded.substring(0, badDecoded.length - 2)
+        var clientId = JSON.parse(decoded).clientId;
+        return clientId;
     }
 }
 

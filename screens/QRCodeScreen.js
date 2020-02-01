@@ -3,8 +3,6 @@ import { StyleSheet, View } from 'react-native';
 
 import QRCode from 'react-native-qrcode';
 
-
-
 export class QRCodeScreen extends React.Component {
 
     qrCodeValue = {

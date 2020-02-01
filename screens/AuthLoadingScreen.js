@@ -13,7 +13,6 @@ export class AuthLoadingScreen extends React.Component {
     }
 
     async bootstrapAsync() {
-        console.log('has been here')
         const accessToken = await AsyncStorage.getItem('accessToken');
         this.props.navigation.navigate(accessToken ? 'AppNavigator' : 'AuthNavigator');
     };
