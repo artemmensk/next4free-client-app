@@ -8,14 +8,16 @@ import { ClientStateScreen } from './screens/ClientStateScreen';
 import { QRCodeScreen } from './screens/QRCodeScreen';
 import { AuthLoadingScreen } from './screens/AuthLoadingScreen';
 import { LoginScreen } from './screens/LoginScreen';
+import { SignupScreen } from './screens/SignupScreen';
 
 const AppNavigator = createStackNavigator({
   ClientStateScreen: ClientStateScreen,
-  QRCodeScreen: QRCodeScreen,
+  QRCodeScreen: QRCodeScreen
 });
 
 const AuthNavigator = createStackNavigator({
-  LoginScreen: LoginScreen
+  'Login screen': LoginScreen,
+  'Signup screen': SignupScreen
 });
 
 const AppContainer =

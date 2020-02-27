@@ -7,13 +7,9 @@ import {
     TextInput,
 } from 'react-native';
 
-import * as SecureStore from 'expo-secure-store';
-
-import base64 from 'react-native-base64'
-
 const backendUrl = 'http://192.168.43.92:8080'
 
-export class LoginScreen extends React.Component {
+export class SignupScreen extends React.Component {
 
     render() {
         return (
@@ -23,7 +19,7 @@ export class LoginScreen extends React.Component {
                         <TextInput
                             style={{paddingHorizontal: 10}}
                             autoCompleteType='email'
-                            placeholder='Type your email'
+                            placeholder='Email'
                             onChangeText={(email) => { this.email = email }}
                         />
                     </View>
@@ -31,16 +27,24 @@ export class LoginScreen extends React.Component {
                         <TextInput
                             style={{paddingHorizontal: 10}}
                             secureTextEntry={true}
-                            placeholder='Type your password'
+                            placeholder='Password'
                             onChangeText={(password) => { this.password = password }}
                         />
                     </View>
+                    <View style={styles.textInputView}>
+                        <TextInput
+                            style={{paddingHorizontal: 10}}
+                            secureTextEntry={true}
+                            placeholder='Confirm password'
+                            onChangeText={(confirmedPassword) => { this.confirmedPassword = confirmedPassword }}
+                        />
+                    </View>
                     <View style={styles.buttonView}>
-                        <Button title='Login' color='black' onPress={() => this.loginAsync()} />
+                        <Button title='Sign up' color='black' onPress={() => this.signUpAsync()} />
                     </View>
                     <View style={styles.textView}>
-                        <Text>Do not have account?
-                            <Text style={{textDecorationLine: 'underline'}} onPress={() => this.props.navigation.navigate('Signup screen')}> Sign up.</Text>
+                        <Text>Already have account?
+                            <Text style={{textDecorationLine: 'underline'}} onPress={() => this.props.navigation.navigate('Login screen')}> Log in.</Text>
                         </Text>
                     </View>
                 </View>
@@ -48,8 +52,8 @@ export class LoginScreen extends React.Component {
         );
     }
 
-    async loginAsync() {
-        var response = await fetch(backendUrl + '/login', {
+    async signUpAsync() {
+        var response = await fetch(backendUrl + '/sign-up', {
             body: JSON.stringify({
                 email: this.email,
                 password: this.password
@@ -60,28 +64,11 @@ export class LoginScreen extends React.Component {
             }
         });
 
-        var setCookieHeader = response.headers.get('Set-Cookie');
-        var accessToken = this.extractAccessToken(setCookieHeader);
-        var clientId = this.extractClientId(accessToken);
+        if (response.status !== 200) {
+            return;
+        }
 
-        SecureStore.setItemAsync('accessToken', accessToken);
-        SecureStore.setItemAsync('clientId', clientId);
-
-        this.props.navigation.navigate('AppNavigator');
-    }
-
-    extractAccessToken(setCookieHeader) {
-        const accessTokenPart = setCookieHeader.split(' ')[0];
-        const accessToken = accessTokenPart.split('=')[1].replace(';', '');
-        return accessToken;
-    }
-
-    extractClientId(accessToken) {
-        var payload = accessToken.split('.')[1];
-        var badDecoded = base64.decode(payload);
-        var decoded = badDecoded.substring(0, badDecoded.length - 2)
-        var clientId = JSON.parse(decoded).clientId;
-        return clientId;
+        this.props.navigation.navigate('Login screen');
     }
 }
 

@@ -70,14 +70,14 @@ export class ClientStateScreen extends React.Component {
     }
 
     targetAmmountOfStamps() {
-        return this.state.currentProcessLoaded ? this.state.currentProcess.processPolicy.targetAmount : ''
+        return this.state.currentProcessLoaded ? this.state.currentProcess.collectingProcessPolicy.targetAmount : ''
     }
 
     async fetchCurrentProcess() {
 
         var accessToken = await SecureStore.getItemAsync('accessToken');
 
-        var response = await fetch(backendUrl + '/client/' + this.state.clientId + '/business/' + businessId + '/current-process', {
+        var response = await fetch(backendUrl + '/client/' + this.state.clientId + '/business/' + businessId + '/current-collecting-process', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
