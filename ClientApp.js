@@ -4,15 +4,15 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { registerRootComponent } from 'expo';
 
-import { ClientStateScreen } from './screens/ClientStateScreen';
+import { MainScreen } from './screens/MainScreen';
 import { QRCodeScreen } from './screens/QRCodeScreen';
 import { AuthLoadingScreen } from './screens/AuthLoadingScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { SignupScreen } from './screens/SignupScreen';
 
 const AppNavigator = createStackNavigator({
-  ClientStateScreen: ClientStateScreen,
-  QRCodeScreen: QRCodeScreen
+  'Main screen': MainScreen,
+  'QR code screen': QRCodeScreen
 });
 
 const AuthNavigator = createStackNavigator({
