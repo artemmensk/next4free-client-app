@@ -78,6 +78,7 @@ export class MainScreen extends React.Component {
                     <View style={styles.buttonsView}>
                         <View style={styles.buttonView}>
                             <Button title={'QR Code'} color='black' onPress={() => this.props.navigation.navigate('QR code screen', { 'clientId': this.state.clientId })} />
+                            <Button title={'View on map'} color='black' onPress={() => this.props.navigation.navigate('Map screen', { 'businesses': this.prepareBusinesses() })} />
                         </View>
                     </View>
                 </ScrollView>
@@ -116,10 +117,10 @@ export class MainScreen extends React.Component {
         var currentProcesses = await currentProcessesResponse.json();
 
         var businessIds = []
-        for(let currentProcess of currentProcesses) {
+        for (let currentProcess of currentProcesses) {
             businessIds.push(currentProcess.businessId)
         }
-    
+
         var businessesResponse = await fetch(backendUrl + '/business?businessIds=' + businessIds.join(','), {
             method: 'GET',
             headers: {
@@ -137,7 +138,7 @@ export class MainScreen extends React.Component {
 
         var businessesArray = await businessesResponse.json();
 
-        var businesses = businessesArray.reduce(function(map, obj) {
+        var businesses = businessesArray.reduce(function (map, obj) {
             map[obj.businessId] = obj.businessName;
             return map;
         }, {});
@@ -148,6 +149,24 @@ export class MainScreen extends React.Component {
             businesses: businesses
         })
     };
+
+    prepareBusinesses() {
+        var businesses = []
+        for (let collectingProcess of this.state.currentProcesses) {
+            var businessName = this.state.businesses[collectingProcess.businessId]
+            var currentCollectingProcess = '' + this.currentAmmountOfStamps(collectingProcess) + '/' + this.targetAmmountOfStamps(collectingProcess)
+            for (let geoLocation of collectingProcess.geoLocations) {
+                businesses.push(
+                    {
+                        latlng: geoLocation,
+                        businessName: businessName,
+                        currentCollectingProcess: currentCollectingProcess,
+                    }
+                )
+            }
+        }
+        return businesses;
+    }
 }
 
 const styles = StyleSheet.create({

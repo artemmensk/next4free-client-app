@@ -9,10 +9,12 @@ import { QRCodeScreen } from './screens/QRCodeScreen';
 import { AuthLoadingScreen } from './screens/AuthLoadingScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { SignupScreen } from './screens/SignupScreen';
+import { MapScreen } from './screens/MapScreen'
 
 const AppNavigator = createStackNavigator({
   'Main screen': MainScreen,
-  'QR code screen': QRCodeScreen
+  'QR code screen': QRCodeScreen,
+  'Map screen': MapScreen
 });
 
 const AuthNavigator = createStackNavigator({
