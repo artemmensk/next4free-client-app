@@ -26,17 +26,16 @@ export class SignupScreen extends React.Component {
                     <View style={styles.textInputView}>
                         <TextInput
                             style={{paddingHorizontal: 10}}
-                            secureTextEntry={true}
-                            placeholder='Password'
-                            onChangeText={(password) => { this.password = password }}
+                            placeholder='Name'
+                            onChangeText={(clientName) => { this.clientName = clientName }}
                         />
                     </View>
                     <View style={styles.textInputView}>
                         <TextInput
                             style={{paddingHorizontal: 10}}
                             secureTextEntry={true}
-                            placeholder='Confirm password'
-                            onChangeText={(confirmedPassword) => { this.confirmedPassword = confirmedPassword }}
+                            placeholder='Password'
+                            onChangeText={(password) => { this.password = password }}
                         />
                     </View>
                     <View style={styles.buttonView}>
@@ -53,10 +52,11 @@ export class SignupScreen extends React.Component {
     }
 
     async signUpAsync() {
-        var response = await fetch(backendUrl + '/sign-up', {
+        var response = await fetch(backendUrl + '/client/sign-up', {
             body: JSON.stringify({
                 email: this.email,
-                password: this.password
+                password: this.password,
+                clientName: this.clientName
             }),
             method: 'POST',
             headers: {

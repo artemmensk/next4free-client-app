@@ -78,8 +78,7 @@ export class LoginScreen extends React.Component {
 
     extractClientId(accessToken) {
         var payload = accessToken.split('.')[1];
-        var badDecoded = base64.decode(payload);
-        var decoded = badDecoded.substring(0, badDecoded.length - 2)
+        var decoded = base64.decode(payload)
         var clientId = JSON.parse(decoded).clientId;
         return clientId;
     }

@@ -49,6 +49,7 @@ export class MainScreen extends React.Component {
                 key++
                 collectingProcesses.push(
                     <View key={key} style={styles.collectingProcessView}>
+                        <Text>{this.state.businesses[collectingProcess.businessId]}</Text>
                         <Text style={styles.text}>{this.currentAmmountOfStamps(collectingProcess)} / {this.targetAmmountOfStamps(collectingProcess)}</Text>
                     </View>
                 )
@@ -96,7 +97,7 @@ export class MainScreen extends React.Component {
 
         var accessToken = await SecureStore.getItemAsync('accessToken');
 
-        var response = await fetch(backendUrl + '/client/' + this.state.clientId + '/current-collecting-processes', {
+        var currentProcessesResponse = await fetch(backendUrl + '/current-collecting-processes', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -105,18 +106,46 @@ export class MainScreen extends React.Component {
             },
         });
 
-        if (response.status !== 200) {
+        if (currentProcessesResponse.status !== 200) {
             this.setState({
                 currentProcessesLoaded: false
             })
             return;
         }
 
-        var currentProcesses = await response.json();
+        var currentProcesses = await currentProcessesResponse.json();
+
+        var businessIds = []
+        for(let currentProcess of currentProcesses) {
+            businessIds.push(currentProcess.businessId)
+        }
+    
+        var businessesResponse = await fetch(backendUrl + '/business?businessIds=' + businessIds.join(','), {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Cookie': 'accessToken=' + accessToken
+            },
+        });
+
+        if (businessesResponse.status !== 200) {
+            this.setState({
+                currentProcessesLoaded: false
+            })
+            return;
+        }
+
+        var businessesArray = await businessesResponse.json();
+
+        var businesses = businessesArray.reduce(function(map, obj) {
+            map[obj.businessId] = obj.businessName;
+            return map;
+        }, {});
 
         this.setState({
             currentProcessesLoaded: true,
-            currentProcesses: currentProcesses
+            currentProcesses: currentProcesses,
+            businesses: businesses
         })
     };
 }
